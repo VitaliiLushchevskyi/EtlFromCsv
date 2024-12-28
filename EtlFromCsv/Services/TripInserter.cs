@@ -53,11 +53,17 @@ namespace EtlFromCsv.Services
             dataTable.Columns.Add("FareAmount", typeof(decimal));
             dataTable.Columns.Add("TipAmount", typeof(decimal));
 
+            var estTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
             foreach (var trip in trips)
             {
+                // Convert the datetime from EST to UTC
+                var pickupDatetimeUtc = TimeZoneInfo.ConvertTimeToUtc(trip.TpepPickupDatetime, estTimeZone);
+                var dropoffDatetimeUtc = TimeZoneInfo.ConvertTimeToUtc(trip.TpepDropoffDatetime, estTimeZone);
+
                 dataTable.Rows.Add(
-                    trip.TpepPickupDatetime,
-                    trip.TpepDropoffDatetime,
+                    pickupDatetimeUtc,
+                    dropoffDatetimeUtc,
                     trip.PassengerCount,
                     trip.TripDistance,
                     trip.StoreAndFwdFlag,
